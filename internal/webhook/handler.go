@@ -61,8 +61,24 @@ type WebhookEvent struct {
 				ID string `json:"id"`
 			} `json:"recipient"`
 			Message struct {
-				MID  string `json:"mid"`
-				Text string `json:"text"`
+				MID   string `json:"mid"`
+				Type  string `json:"type"`
+				Text  string `json:"text,omitempty"`
+				Image *struct {
+					URL string `json:"url"`
+				} `json:"image,omitempty"`
+				Product *struct {
+					ProductID string `json:"product_id"`
+				} `json:"product_card,omitempty"`
+				Order *struct {
+					OrderID string `json:"order_id"`
+				} `json:"order_card,omitempty"`
+				Coupon *struct {
+					CouponID string `json:"coupon_id"`
+				} `json:"coupon_card,omitempty"`
+				ReturnRefundCard *struct {
+					ReturnRefundID string `json:"return_refund_id"`
+				} `json:"return_refund_card,omitempty"`
 			} `json:"message"`
 		} `json:"messaging"`
 	} `json:"entry"`
@@ -88,11 +104,22 @@ func (h *WebhookHandler) handleEvent(w http.ResponseWriter, r *http.Request) {
 	for _, entry := range event.Entry {
 		for _, messaging := range entry.Messaging {
 			senderID := messaging.Sender.ID
-			text := messaging.Message.Text
-			if text != "" {
-				fmt.Printf("Received message from %s: %s\n", senderID, text)
-				// In a real app, you'd likely respond here using h.Client.SendTextMessage
-				// For now, just logging it.
+			msgType := messaging.Message.Type
+
+			fmt.Printf("Received message type '%s' from %s\n", msgType, senderID)
+
+			switch msgType {
+			case "text":
+				fmt.Printf("Text: %s\n", messaging.Message.Text)
+			case "image":
+				if messaging.Message.Image != nil {
+					fmt.Printf("Image URL: %s\n", messaging.Message.Image.URL)
+				}
+			case "product_card":
+				if messaging.Message.Product != nil {
+					fmt.Printf("Product ID: %s\n", messaging.Message.Product.ProductID)
+				}
+				// Add other cases as needed
 			}
 		}
 	}
