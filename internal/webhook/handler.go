@@ -127,7 +127,18 @@ func (h *WebhookHandler) handleEvent(w http.ResponseWriter, r *http.Request) {
 					if messaging.Message.Product != nil {
 						fmt.Printf("Product ID: %s\n", messaging.Message.Product.ProductID)
 					}
-					// Add other cases as needed
+				case "order_card":
+					if messaging.Message.Order != nil {
+						fmt.Printf("Order ID: %s\n", messaging.Message.Order.OrderID)
+					}
+				case "coupon_card":
+					if messaging.Message.Coupon != nil {
+						fmt.Printf("Coupon ID: %s\n", messaging.Message.Coupon.CouponID)
+					}
+				case "return_refund_card":
+					if messaging.Message.ReturnRefundCard != nil {
+						fmt.Printf("Return/Refund ID: %s\n", messaging.Message.ReturnRefundCard.ReturnRefundID)
+					}
 				}
 			} else if messaging.Read != nil {
 				fmt.Printf("Received READ receipt from %s at %d\n", senderID, messaging.Read.Watermark)
