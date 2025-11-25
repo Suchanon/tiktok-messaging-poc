@@ -60,7 +60,7 @@ type WebhookEvent struct {
 			Recipient struct {
 				ID string `json:"id"`
 			} `json:"recipient"`
-			Message struct {
+			Message *struct {
 				MID   string `json:"mid"`
 				Type  string `json:"type"`
 				Text  string `json:"text,omitempty"`
@@ -79,7 +79,14 @@ type WebhookEvent struct {
 				ReturnRefundCard *struct {
 					ReturnRefundID string `json:"return_refund_id"`
 				} `json:"return_refund_card,omitempty"`
-			} `json:"message"`
+			} `json:"message,omitempty"`
+			Read *struct {
+				Watermark int64 `json:"watermark"`
+			} `json:"read,omitempty"`
+			Delivery *struct {
+				Mids      []string `json:"mids"`
+				Watermark int64    `json:"watermark"`
+			} `json:"delivery,omitempty"`
 		} `json:"messaging"`
 	} `json:"entry"`
 }
@@ -104,22 +111,28 @@ func (h *WebhookHandler) handleEvent(w http.ResponseWriter, r *http.Request) {
 	for _, entry := range event.Entry {
 		for _, messaging := range entry.Messaging {
 			senderID := messaging.Sender.ID
-			msgType := messaging.Message.Type
 
-			fmt.Printf("Received message type '%s' from %s\n", msgType, senderID)
+			if messaging.Message != nil {
+				msgType := messaging.Message.Type
+				fmt.Printf("Received message type '%s' from %s\n", msgType, senderID)
 
-			switch msgType {
-			case "text":
-				fmt.Printf("Text: %s\n", messaging.Message.Text)
-			case "image":
-				if messaging.Message.Image != nil {
-					fmt.Printf("Image URL: %s\n", messaging.Message.Image.URL)
+				switch msgType {
+				case "text":
+					fmt.Printf("Text: %s\n", messaging.Message.Text)
+				case "image":
+					if messaging.Message.Image != nil {
+						fmt.Printf("Image URL: %s\n", messaging.Message.Image.URL)
+					}
+				case "product_card":
+					if messaging.Message.Product != nil {
+						fmt.Printf("Product ID: %s\n", messaging.Message.Product.ProductID)
+					}
+					// Add other cases as needed
 				}
-			case "product_card":
-				if messaging.Message.Product != nil {
-					fmt.Printf("Product ID: %s\n", messaging.Message.Product.ProductID)
-				}
-				// Add other cases as needed
+			} else if messaging.Read != nil {
+				fmt.Printf("Received READ receipt from %s at %d\n", senderID, messaging.Read.Watermark)
+			} else if messaging.Delivery != nil {
+				fmt.Printf("Received DELIVERY receipt from %s for MIDs %v at %d\n", senderID, messaging.Delivery.Mids, messaging.Delivery.Watermark)
 			}
 		}
 	}
