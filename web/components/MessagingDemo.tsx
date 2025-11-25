@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Send, Image, ShoppingBag } from "lucide-react";
+import GlassCard from "./GlassCard";
+import AnimatedIcon from "./AnimatedIcon";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function MessagingDemo() {
     const [businessID, setBusinessID] = useState("");
@@ -32,99 +35,111 @@ export default function MessagingDemo() {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-                <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                    <Send className="w-5 h-5 text-blue-600" /> Messaging Demo
+        <GlassCard delay={0.2}>
+            <div className="p-6 border-b border-white/20 bg-white/10">
+                <h2 className="text-xl font-bold text-slate-800 flex items-center gap-3">
+                    <AnimatedIcon icon={Send} className="w-6 h-6 text-blue-600" />
+                    Messaging Demo
                 </h2>
-                <p className="text-sm text-slate-500 mt-1">Send test messages to your TikTok bot.</p>
+                <p className="text-sm text-slate-600 mt-1">Send test messages to your TikTok bot.</p>
             </div>
 
             <div className="p-6 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Business ID</label>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Business ID</label>
                         <input
                             type="text"
                             value={businessID}
                             onChange={(e) => setBusinessID(e.target.value)}
-                            className="block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border transition-colors"
+                            className="block w-full rounded-xl border-white/30 bg-white/50 shadow-inner focus:border-blue-500 focus:ring-blue-500/50 sm:text-sm p-3 backdrop-blur-sm transition-all"
                             placeholder="e.g. 1234567890"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Recipient OpenID</label>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Recipient OpenID</label>
                         <input
                             type="text"
                             value={openID}
                             onChange={(e) => setOpenID(e.target.value)}
-                            className="block w-full rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border transition-colors"
+                            className="block w-full rounded-xl border-white/30 bg-white/50 shadow-inner focus:border-blue-500 focus:ring-blue-500/50 sm:text-sm p-3 backdrop-blur-sm transition-all"
                             placeholder="e.g. ouid_..."
                         />
                     </div>
                 </div>
 
                 <div className="space-y-4">
-                    <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                        <h3 className="text-sm font-semibold text-slate-700 mb-3">Send Text Message</h3>
+                    <div className="bg-white/40 p-5 rounded-2xl border border-white/30 shadow-sm">
+                        <h3 className="text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">Send Text Message</h3>
                         <div className="flex gap-3">
                             <input
                                 type="text"
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
-                                className="flex-1 rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border"
+                                className="flex-1 rounded-xl border-white/30 bg-white/60 shadow-inner focus:border-blue-500 focus:ring-blue-500/50 sm:text-sm p-3 transition-all"
                                 placeholder="Type your message here..."
                             />
-                            <button
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={() => sendMessage("text")}
                                 disabled={!message || !businessID || !openID}
-                                className="bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors shadow-sm"
+                                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-bold transition-all"
                             >
                                 Send
-                            </button>
+                            </motion.button>
                         </div>
                     </div>
 
-                    <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                        <h3 className="text-sm font-semibold text-slate-700 mb-3">Send Image Message</h3>
+                    <div className="bg-white/40 p-5 rounded-2xl border border-white/30 shadow-sm">
+                        <h3 className="text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">Send Image Message</h3>
                         <div className="flex gap-3">
                             <input
                                 type="text"
                                 value={imageUrl}
                                 onChange={(e) => setImageUrl(e.target.value)}
-                                className="flex-1 rounded-lg border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border"
+                                className="flex-1 rounded-xl border-white/30 bg-white/60 shadow-inner focus:border-blue-500 focus:ring-blue-500/50 sm:text-sm p-3 transition-all"
                                 placeholder="https://example.com/image.jpg"
                             />
-                            <button
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
                                 onClick={() => sendMessage("image")}
                                 disabled={!imageUrl || !businessID || !openID}
-                                className="bg-emerald-600 text-white px-5 py-2.5 rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors shadow-sm flex items-center gap-2"
+                                className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-bold transition-all flex items-center gap-2"
                             >
-                                <Image className="w-4 h-4" /> Send Image
-                            </button>
+                                <AnimatedIcon icon={Image} className="w-5 h-5" /> Send Image
+                            </motion.button>
                         </div>
                     </div>
                 </div>
 
-                {status && (
-                    <div className={`p-4 rounded-lg text-sm font-medium flex items-center gap-2 ${status.includes("Error")
-                            ? "bg-red-50 text-red-700 border border-red-100"
-                            : status === "Sending..."
-                                ? "bg-blue-50 text-blue-700 border border-blue-100"
-                                : "bg-green-50 text-green-700 border border-green-100"
-                        }`}>
-                        {status.includes("Error") ? (
-                            <span className="w-2 h-2 rounded-full bg-red-500" />
-                        ) : status === "Sending..." ? (
-                            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                        ) : (
-                            <span className="w-2 h-2 rounded-full bg-green-500" />
-                        )}
-                        {status}
-                    </div>
-                )}
+                <AnimatePresence>
+                    {status && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className={`p-4 rounded-xl text-sm font-bold flex items-center gap-3 shadow-md backdrop-blur-md ${status.includes("Error")
+                                ? "bg-red-500/10 text-red-800 border border-red-200/50"
+                                : status === "Sending..."
+                                    ? "bg-blue-500/10 text-blue-800 border border-blue-200/50"
+                                    : "bg-green-500/10 text-green-800 border border-green-200/50"
+                                }`}
+                        >
+                            {status.includes("Error") ? (
+                                <span className="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+                            ) : status === "Sending..." ? (
+                                <span className="w-3 h-3 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+                            ) : (
+                                <span className="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+                            )}
+                            {status}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
-        </div>
+        </GlassCard>
     );
 }
