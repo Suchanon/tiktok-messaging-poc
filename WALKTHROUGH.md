@@ -19,10 +19,19 @@
 
 2.  **Start the Server**
     ```bash
-go run ./cmd/server
+    # Terminal 1
+    go run ./cmd/server
     ```
 
-3.  **Expose via Ngrok**
+3.  **Start the UI**
+    ```bash
+    # Terminal 2
+    cd web
+    yarn dev
+    ```
+    Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+4.  **Expose via Ngrok**
     In a separate terminal:
     ```bash
     ngrok http 8080
